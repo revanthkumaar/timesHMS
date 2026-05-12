@@ -60,3 +60,8 @@ pnpm typecheck
 pnpm test
 pnpm build
 ```
+
+
+## Linting note
+
+API app currently uses TypeScript-compiler lint gate (`tsc --noEmit`) for CI stability.
