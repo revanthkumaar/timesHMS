@@ -9,6 +9,7 @@ datasource db {
 
 enum UserStatus { ACTIVE INACTIVE SUSPENDED }
 enum AppointmentStatus { PENDING CONFIRMED CANCELLED COMPLETED NO_SHOW WAITLISTED }
+enum RoleKey { SUPER_ADMIN HOSPITAL_ADMIN CLINIC_MANAGER DOCTOR RECEPTIONIST BILLING_EXECUTIVE SUPPORT_EXECUTIVE PATIENT }
 
 model Tenant {
   id        String   @id @default(cuid())
@@ -18,12 +19,13 @@ model Tenant {
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
   users     User[]
+  roles     Role[]
 }
 
 model User {
   id           String   @id @default(cuid())
   tenantId     String
-  email        String   @unique
+  email        String
   phone        String?
   passwordHash String?
   status       UserStatus @default(ACTIVE)
@@ -31,7 +33,29 @@ model User {
   updatedAt    DateTime @updatedAt
   deletedAt    DateTime?
   tenant       Tenant   @relation(fields: [tenantId], references: [id])
+  userRoles    UserRole[]
+  @@unique([tenantId, email])
   @@index([tenantId, status])
+}
+
+model Role {
+  id        String   @id @default(cuid())
+  tenantId  String
+  key       RoleKey
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  users     UserRole[]
+  @@unique([tenantId, key])
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User @relation(fields: [userId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
+  @@id([userId, roleId])
 }
 
 model Appointment {

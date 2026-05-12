@@ -1,30 +1,54 @@
 # Enterprise Multi-tenant HMS SaaS Monorepo
 
-This repository contains a production-oriented, modular foundation for a multi-tenant Hospital Management System (HMS) SaaS platform.
+This repository now includes a runnable backend API with multi-tenant-aware appointment APIs and JWT authentication.
 
-## What is included in this initial delivery
+> Tooling note: the repo pins `pnpm@9.12.2` (via `packageManager`) and CI uses the exact same version to avoid version-conflict failures.
 
-- Complete implementation plan and phased roadmap
-- System architecture and module dependency graph
-- Multi-tenant database ERD and Prisma schema
-- API design contracts (v1)
-- Turborepo + pnpm monorepo bootstrap
-- NestJS backend bootstrap with security, versioning, Swagger, and health endpoint
-- Shared TypeScript packages for config, types, and design tokens
-- Docker, docker-compose, CI workflow, Kubernetes and Terraform-ready infrastructure skeleton
+## Included applications
 
-## Monorepo
+- `apps/api` — NestJS API (implemented)
+- `apps/patient-web` — planned
+- `apps/admin-web` — planned
+- `apps/doctor-web` — planned
+- `apps/mobile-app` — planned
 
-- Package manager: `pnpm`
-- Orchestration: `turbo`
-- Language: `TypeScript`
+## Run locally
 
-## Quick start
+1. Copy environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+2. Start infrastructure:
+   ```bash
+   docker compose up -d postgres redis
+   ```
+3. Install dependencies and generate Prisma client:
+   ```bash
+   pnpm install
+   pnpm --filter @apps/api prisma:generate
+   ```
+4. Run migrations and seed:
+   ```bash
+   pnpm --filter @apps/api prisma:migrate
+   pnpm --filter @apps/api prisma:seed
+   ```
+5. Start API:
+   ```bash
+   pnpm --filter @apps/api dev
+   ```
 
-```bash
-pnpm install
-pnpm dev
-```
+## Quick verification using Postman
+
+- Health: `GET http://localhost:3000/v1/health`
+- Login: `POST http://localhost:3000/v1/auth/login/password`
+  ```json
+  {"email":"patient@example.com","password":"Password@123"}
+  ```
+- Create appointment: `POST http://localhost:3000/v1/appointments`
+  - Headers:
+    - `Authorization: Bearer <token>`
+    - `x-tenant-id: <tenant-id>`
+- List appointments: `GET http://localhost:3000/v1/appointments`
 
 ## Quality gates
 
@@ -34,5 +58,3 @@ pnpm typecheck
 pnpm test
 pnpm build
 ```
-
-See `docs/` for architecture, ERD, API contracts, and phased implementation details.
