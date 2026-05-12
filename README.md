@@ -4,6 +4,8 @@ This repository now includes a runnable backend API with multi-tenant-aware appo
 
 > Tooling note: the repo pins `pnpm@9.12.2` (via `packageManager`) and CI uses the exact same version to avoid version-conflict failures.
 
+> CI note: cache is disabled until `pnpm-lock.yaml` is committed; once lockfile is present, enable `setup-node` pnpm cache.
+
 ## Included applications
 
 - `apps/api` — NestJS API (implemented)
