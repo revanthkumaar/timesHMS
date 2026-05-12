@@ -9,10 +9,10 @@ This repository now includes a runnable backend API with multi-tenant-aware appo
 ## Included applications
 
 - `apps/api` — NestJS API (implemented)
-- `apps/patient-web` — planned
-- `apps/admin-web` — planned
-- `apps/doctor-web` — planned
-- `apps/mobile-app` — planned
+- `apps/patient-web` — Next.js patient UI (workflow screens)
+- `apps/admin-web` — Next.js admin UI (workflow screens)
+- `apps/doctor-web` — Next.js doctor UI (workflow screens)
+- `apps/mobile-app` — planned (Expo)
 
 ## Run locally
 
@@ -65,3 +65,12 @@ pnpm build
 ## Linting note
 
 API app currently uses TypeScript-compiler lint gate (`tsc --noEmit`) for CI stability.
+
+
+## Run web portals
+
+```bash
+pnpm --filter @apps/patient-web dev
+pnpm --filter @apps/admin-web dev
+pnpm --filter @apps/doctor-web dev
+```
